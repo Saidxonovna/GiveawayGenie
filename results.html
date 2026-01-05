@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Natijalar - GiveawayGenie</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>GiveawayGenie</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Bosh sahifa</a>
+                <a href="index.html#how-it-works">Qanday ishlaydi</a>
+                <a href="index.html#features">Xususiyatlar</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 100px; text-align: center;">
+        <h1>Tanlov Natijalari</h1>
+        <div id="resultsContent">
+            <p>Natijalar yuklanmoqda...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // URL dan giveaway ID ni olish
+        function getGiveawayIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Natijalarni yuklash
+        async function loadResults() {
+            const giveawayId = getGiveawayIdFromUrl();
+            if (giveawayId) {
+                try {
+                    const response = await fetch(`http://localhost:5000/api/get-giveaway/${giveawayId}`);
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        displayResults(data);
+                    } else {
+                        showError(data.error);
+                    }
+                } catch (error) {
+                    showError(error.message);
+                }
+            } else {
+                showError("Tanlov ID si topilmadi");
+            }
+        }
+
+        // Natijalarni ko'rsatish
+        function displayResults(data) {
+            const giveaway = data.giveaway;
+            const container = document.getElementById('resultsContent');
+            
+            let html = `
+                <div class="results-container">
+                    <div class="results-header">
+                        <h2>Tanlov #${giveaway.id} Natijalari</h2>
+                        <p><strong>Holat:</strong> ${giveaway.status === 'completed' ? 'Yakunlangan' : 'Faol'}</p>
+                    </div>
+                    
+                    <div class="results-info">
+                        <p><strong>Post:</strong> <a href="${giveaway.post_url}" target="_blank">${giveaway.post_url}</a></p>
+                        <p><strong>G'oliblar soni:</strong> ${giveaway.winners_count}</p>
+                        <p><strong>Tanlov usuli:</strong> ${getMethodName(giveaway.selection_method)}</p>
+                        <p><strong>Yaratilgan sana:</strong> ${new Date(giveaway.created_at).toLocaleDateString('uz-UZ')}</p>
+                    </div>
+            `;
+            
+            if (giveaway.results && giveaway.results.winners) {
+                html += `
+                    <div class="winners-section">
+                        <h3><i class="fas fa-crown"></i> G'oliblar</h3>
+                        <div class="winners-list">
+                `;
+                
+                giveaway.results.winners.forEach((winner, index) => {
+                    html += `
+                        <div class="winner-item">
+                            <div class="winner-rank">${index + 1}</div>
+                            <div class="winner-info">
+                                <h4>${winner.username}</h4>
+                                <p>${winner.entry_type === 'comment' ? 'Izoh' : 'Like'} orqali</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                        <button onclick="downloadCertificate()" class="btn-primary">
+                            <i class="fas fa-certificate"></i> Sertifikatni Yuklab Olish
+                        </button>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="no-winners">
+                        <i class="fas fa-hourglass-half"></i>
+                        <h3>G'oliblar hali tanlanmagan</h3>
+                        <p>Iltimos, biroz kutib turing yoki tanlov boshqaruv paneliga qayting.</p>
+                    </div>
+                `;
+            }
+            
+            html += `
+                    <div class="action-buttons">
+                        <a href="dashboard.html?id=${giveaway.id}" class="btn-secondary">
+                            <i class="fas fa-tachometer-alt"></i> Boshqaruv Paneli
+                        </a>
+                        <a href="index.html" class="btn-primary">
+                            <i class="fas fa-plus"></i> Yangi Tanlov
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = html;
+        }
+
+        // Xatolik ko'rsatish
+        function showError(message) {
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Xatolik yuz berdi</h3>
+                    <p>${message}</p>
+                    <a href="index.html" class="btn-primary">Bosh sahifaga qaytish</a>
+                </div>
+            `;
+        }
+
+        // Sertifikat yuklab olish
+        function downloadCertificate() {
+            const giveawayId = getGiveawayIdFromUrl();
+            if (giveawayId) {
+                const link = document.createElement('a');
+                link.href = `http://localhost:5000/api/get-giveaway/${giveawayId}`;
+                link.download = `giveaway-${giveawayId}-certificate.json`;
+                link.click();
+                
+                alert('Sertifikat yuklab olindi! Fayl nomi: giveaway-' + giveawayId + '-certificate.json');
+            }
+        }
+
+        // Tanlov usuli nomi
+        function getMethodName(method) {
+            const methods = {
+                'comments': 'Faqat Izohlar',
+                'likes': 'Faqat Layklar',
+                'both': 'Ikkalasi Ham'
+            };
+            return methods[method] || method;
+        }
+
+        // Sahifa yuklanganda
+        document.addEventListener('DOMContentLoaded', loadResults);
+    </script>
+</body>
+</html>
