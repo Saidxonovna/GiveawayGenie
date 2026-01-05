@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GiveawayGenie.com - Instagram Tanlovlari</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>GiveawayGenie</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Bosh sahifa</a>
+                <a href="#how-it-works">Qanday ishlaydi</a>
+                <a href="#features">Xususiyatlar</a>
+                <button class="btn-primary" onclick="startGiveaway()">Tanlov Boshlash</button>
+            </div>
+            <button class="menu-btn" onclick="toggleMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Instagram Tanlovlaringizni <span class="highlight">Avtomatlashtiring</span></h1>
+                <p>Instagram postingiz linkini qo'ying, g'oliblarni biz tanlab beramiz. 100% bepul!</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary btn-large" onclick="startGiveaway()">
+                        <i class="fas fa-plus"></i> Yangi Tanlov
+                    </button>
+                    <button class="btn-secondary btn-large" onclick="scrollToHow()">
+                        <i class="fas fa-play-circle"></i> Qanday ishlaydi
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <h3>10,000+</h3>
+                        <p>Tanlov o'tkazilgan</p>
+                    </div>
+                    <div class="stat">
+                        <h3>100%</h3>
+                        <p>Bepul xizmat</p>
+                    </div>
+                    <div class="stat">
+                        <h3>5 daqiqa</h3>
+                        <p>O'rnatish vaqti</p>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://cdn-icons-png.flaticon.com/512/4086/4086679.png" alt="Giveaway Illustration">
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">3 Oddiy Qadamda G'oliblarni Tanlang</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <i class="fas fa-link step-icon"></i>
+                    <h3>Linkni Qo'ying</h3>
+                    <p>Instagram postingizning linkini nusxalab, shu yerga joylang</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <i class="fas fa-cog step-icon"></i>
+                    <h3>Sozlang</h3>
+                    <p>G'oliblar soni va tanlov usulini (like/comment) belgilang</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <i class="fas fa-trophy step-icon"></i>
+                    <h3>G'oliblarni Tanlang</h3>
+                    <p>Bir tugma bosish bilan g'oliblar avtomatik tanlanadi</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Giveaway Form -->
+    <section class="giveaway-form" id="giveaway-form">
+        <div class="container">
+            <h2 class="section-title">Yangi Tanlov Yarating</h2>
+            <div class="form-card">
+                <div class="form-group">
+                    <label for="postUrl">
+                        <i class="fab fa-instagram"></i> Instagram Post Linki
+                    </label>
+                    <input type="url" id="postUrl" 
+                           placeholder="https://www.instagram.com/p/ABC123..."
+                           required>
+                    <small class="help-text">Instagram postingizning to'liq linkini kiriting</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="winnersCount">
+                        <i class="fas fa-users"></i> G'oliblar Soni
+                    </label>
+                    <input type="number" id="winnersCount" 
+                           min="1" max="100" value="1"
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <i class="fas fa-check-circle"></i> Tanlov Usuli
+                    </label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="selectionMethod" value="comments" checked>
+                            <span>Faqat Izohlar</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="selectionMethod" value="likes">
+                            <span>Faqat Layklar</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="selectionMethod" value="both">
+                            <span>Ikkalasi Ham</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn-primary btn-large" onclick="createGiveaway()" id="createBtn">
+                    <i class="fas fa-magic"></i> Tanlov Yaratish
+                </button>
+
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Instagram post tahlil qilinmoqda...</p>
+                </div>
+
+                <div id="results" class="results" style="display: none;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Nima Uchun Bizni Tanlashadi?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-free-code-camp feature-icon"></i>
+                    <h3>100% Bepul</h3>
+                    <p>Hech qanday to'lov, obuna yoki cheklovlar yo'q. Har doim bepul!</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <h3>Tezkor</h3>
+                    <p>G'oliblarni soniyalar ichida tanlash. Uzoq kutish yo'q!</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt feature-icon"></i>
+                    <h3>Xavfsiz</h3>
+                    <p>API token talab qilinmaydi. Shaxsiy ma'lumotlaringiz xavfsiz.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-language feature-icon"></i>
+                    <h3>O'zbek Tilida</h3>
+                    <p>Barcha interfeys va ko'rsatmalar o'zbek tilida.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-random feature-icon"></i>
+                    <h3>Adolatli Tanlov</h3>
+                    <p>Random algoritm yordamida adolatli g'oliblar tanlanadi.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-alt feature-icon"></i>
+                    <h3>Mobilga Mos</h3>
+                    <p>Telefon yoki planshetda ham qulay ishlating.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <i class="fas fa-magic"></i>
+                    <h2>GiveawayGenie</h2>
+                    <p>Instagram tanlovlaringizni soddalashtiring</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Tez Havolalar</h3>
+                    <a href="#home">Bosh sahifa</a>
+                    <a href="#how-it-works">Qanday ishlaydi</a>
+                    <a href="#features">Xususiyatlar</a>
+                    <a href="#giveaway-form">Tanlov yaratish</a>
+                </div>
+                <div class="footer-contact">
+                    <h3>Aloqa</h3>
+                    <p><i class="fas fa-envelope"></i> info@giveawaygenie.com</p>
+                    <p><i class="fas fa-globe"></i> giveawaygenie.com</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 GiveawayGenie.com. Barcha huquqlar himoyalangan.</p>
+                <p>Bu loyiha ochiq manba hisoblanadi. API token talab qilmaydi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tanlov Boshqaruvi</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="dashboardContent">
+                <!-- Dashboard content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
