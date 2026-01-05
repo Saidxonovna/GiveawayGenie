@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GiveawayGenie</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-magic"></i>
+                <h1>GiveawayGenie</h1>
+            </div>
+            <div class="nav-links">
+                <a href="index.html">Bosh sahifa</a>
+                <a href="index.html#how-it-works">Qanday ishlaydi</a>
+                <a href="index.html#features">Xususiyatlar</a>
+                <a href="index.html#giveaway-form">Yangi tanlov</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 100px;">
+        <h1>Tanlovlar Boshqaruvi</h1>
+        <div id="dashboardContent">
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // URL dan giveaway ID ni olish
+        function getGiveawayIdFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Dashboard yuklash
+        async function loadDashboard() {
+            const giveawayId = getGiveawayIdFromUrl();
+            if (giveawayId) {
+                await viewDashboard(giveawayId);
+            } else {
+                document.getElementById('dashboardContent').innerHTML = `
+                    <div class="error-message">
+                        <h3><i class="fas fa-exclamation-circle"></i> Tanlov topilmadi</h3>
+                        <p>Iltimos, tanlov ID sini tekshiring yoki yangi tanlov yarating.</p>
+                        <a href="index.html" class="btn-primary">Bosh sahifa</a>
+                    </div>
+                `;
+            }
+        }
+
+        // Sahifa yuklanganda
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+    </script>
+</body>
+</html>
